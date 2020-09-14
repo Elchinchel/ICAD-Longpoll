@@ -27,7 +27,7 @@ def get_host() -> Union[str, None]:
 
 
 if config.host is None:
-    config.host = get_host(config)
+    config.host = get_host()
     if config.host is None:
         print('Не удалось найти сайт\n' +
               'Проверь имя пользователя в config.ini')

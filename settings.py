@@ -1,7 +1,6 @@
 # я хз че там по ограничениям запросов на PA
-# вdозсожно стоит хранить настройки локально?
+# возможно стоит хранить настройки локально?
 import os
-from requests import post
 from config import config
 from typing import List, Set
 from utils import async_post

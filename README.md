@@ -4,9 +4,11 @@ LP модуль предоставляет дежурному информаци
 
 ## Установка
 ### Termux (эмулятор терминала для Android)
-Вводим по очереди команды
+Вводи по очереди следующие команды:
 ```shell script
 pkg install git
+pkg install nano
+pkg install clang
 pkg install python
 git clone https://github.com/elchinchel/icad_lp
 cd icad_lp

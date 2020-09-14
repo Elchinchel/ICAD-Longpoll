@@ -72,3 +72,6 @@ while True:
     except Exception:
         log(f'Произошла ошибка!\n{traceback.format_exc()}')
         time.sleep(5)
+    except KeyboardInterrupt:
+        log('Клавиатурное прерывание, сдыхаю...')
+        break

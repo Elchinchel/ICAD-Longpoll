@@ -9,8 +9,8 @@ from config import config
 
 async def ignore_add(args: List[str], payload: str,
                      vk: VkApi, update: list) -> str:
-    msg = await vk('messages.getById', message_ids=update[1])['items'][0]
-    uid = find_mention_by_message(msg, vk)
+    msg = (await vk('messages.getById', message_ids=update[1]))['items'][0]
+    uid = await find_mention_by_message(msg, vk)
     if uid is None:
         return '⚠️ Пользователь не найден'
     if uid == config.self_id:
@@ -25,8 +25,8 @@ async def ignore_add(args: List[str], payload: str,
 
 async def ignore_remove(args: List[str], payload: str,
                         vk: VkApi, update: list) -> str:
-    msg = await vk('messages.getById', message_ids=update[1])['items'][0]
-    uid = find_mention_by_message(msg, vk)
+    msg = (await vk('messages.getById', message_ids=update[1]))['items'][0]
+    uid = await find_mention_by_message(msg, vk)
     if uid is None:
         return '⚠️ Пользователь не найден'
     uid = str(uid)

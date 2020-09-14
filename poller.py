@@ -42,12 +42,12 @@ async def listen_longpoll(user_data: dict):  # noqa
         if update[2] & 2 != 2:
             if update[3] > 2e9:
                 if update[6].get('from', 0) in settings.ignored_users:
-                    delete(update[1])
+                    delete([update[1]])
             else:
                 if str(update[3]) in settings.ignored_users:
-                    delete(update[1])
+                    delete([update[1]])
         else:
-            words = update[5].split(' ', 2)
+            words = update[5].replace('<br>', ' ').split(' ', 2)
             if words[0] in settings.binds_keys:
                 words = [settings.prefixes[0], settings.binds[words[0]].split(' ')] + words[2:]  # noqa
             if len(words) < 2:

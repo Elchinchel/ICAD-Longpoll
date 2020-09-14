@@ -21,6 +21,8 @@ class Config:
             self._raw, self.__format = parse(cfg.read(), save_format=True)
             self.__dict__.update(self._raw)
             self.local_prefixes = set(self.local_prefixes)
+            if self.username is None:
+                self.username = ""
 
     def sync(self):
         for key in self._raw:
@@ -31,7 +33,7 @@ class Config:
 
 config = Config()
 
-if config.username is None and config.host is None:
+if config.username == "" and config.host is None:
     print('Необходимо указать имя пользователя или сайт в config.ini')
     sys.exit()
 if config.token is None:

@@ -22,13 +22,14 @@ class Settings:
     @staticmethod
     def update(data: dict):
         global settings
+        settings._raw = data
         settings.__dict__.update(data)
         settings.binds_keys = set(settings.binds.keys())
 
     async def sync(self):
         for key in self._raw:
             self._raw[key] = getattr(self, key)
-        async_post(config.host+'/longpoll/sync', {
+        await async_post(config.host+'/longpoll/sync', {
                 'access_key': config.access_key,
                 'settings': self._raw
             })

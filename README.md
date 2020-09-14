@@ -16,5 +16,7 @@ pip install -r requirements.txt
 nano config.ini
 ```
 *Вставляй токен и ссылку на сайт или имя пользователя*
+![](https://sun9-59.userapi.com/UbdxCZB2ar_COycjt8r4aKuui2N1iagUkjW_-A/KAG4gtp-qhs.jpg)
+*(**специально для мусаева: НЕ ТРОГАЙ СТРОКИ С КВАДРАТНЫМИ СКОБКАМИ**)*
 
 Настройка завершена, команда для запуска: *`python3 start.py`*

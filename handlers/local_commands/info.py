@@ -4,7 +4,7 @@ from typing import List
 from lib.vkmini import VkApi
 # from utils import async_get
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 
 async def info(args: List[str], payload: str,

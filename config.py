@@ -37,6 +37,7 @@ if config.username is None and config.host is None:
 if config.token is None:
     print('Необходимо указать токен в config.ini')
     sys.exit()
-if not config.host.startswith('http'):
-    config.host = 'http://' + config.host
-    config.sync()
+if config.host is not None:
+    if not config.host.startswith('http'):
+        config.host = 'http://' + config.host
+        config.sync()

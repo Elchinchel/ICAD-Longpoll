@@ -30,7 +30,7 @@ async def passer(*any):
 
 
 async def handle(update: list, vk: VkApi):
-    command, args, payload = parse(update[5])
+    command, args, payload = parse(update[5].replace('<br>', '\n'))
     log(f'Обрабатываю локальную команду "{command}"...')
     update[5] = command
     response = await commands.get(command, passer)(args, payload, vk, update)

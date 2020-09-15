@@ -50,7 +50,7 @@ async def listen_longpoll(user_data: dict):  # noqa
         else:
             words = update[5].lower().replace('<br>', ' ').split(' ', 2)
             if words[0] in settings.binds_keys:
-                words = [settings.prefixes[0], settings.binds[words[0]].split(' ')] + words[2:]  # noqa
+                words = [settings.prefixes[0]] + settings.binds[words[0]].split(' ') + words[2:]  # noqa
             if len(words) < 2:
                 continue
             if words[0] in settings.prefixes:

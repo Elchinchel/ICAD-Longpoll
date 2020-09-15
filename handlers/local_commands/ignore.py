@@ -38,7 +38,7 @@ async def ignore_remove(args: List[str], payload: str,
 
 
 async def ignore_list(args: List[str], payload: str,
-                      vk: VkApi, update: list) -> str:
+                      vk: VkApi, update: list) -> None:
     await send_signal(json.dumps({
             'access_key': config.access_key,
             'command': 'игнор',

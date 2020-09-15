@@ -1,8 +1,8 @@
 from lib.vkmini import VkApi
-from utils import parse
+from utils import parse, log
+from .prefixes import add_prefix, remove_prefix, prefix_list
 from .ignore import ignore_add, ignore_list, ignore_remove
 from .binds import bind_add, binds_list, bind_remove
-from .prefixes import add_prefix, remove_prefix
 from .ping import pings, ping
 from .info import info
 
@@ -10,6 +10,7 @@ from .info import info
 commands = {
     '+префикс': add_prefix,
     '-префикс': remove_prefix,
+    'префиксы': prefix_list,
     '+игнор': ignore_add,
     '-игнор': ignore_remove,
     'игнор': ignore_list,
@@ -30,6 +31,8 @@ async def passer(*any):
 
 async def handle(update: list, vk: VkApi):
     command, args, payload = parse(update[5])
+    log(f'Обрабатываю локальную команду "{command}"...')
     update[5] = command
-    text = await commands.get(command, passer)(args, payload, vk, update)
-    await vk.msg_op(2, update[3], text, update[1])
+    response = await commands.get(command, passer)(args, payload, vk, update)
+    if response is not None:
+        await vk.msg_op(2, update[3], response, update[1])

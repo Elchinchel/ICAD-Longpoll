@@ -1,7 +1,10 @@
 from typing import List
+import json
 
 from lib.vkmini import VkApi
+from utils import send_signal
 from settings import settings
+from config import config
 
 
 async def add_prefix(args: List[str], payload: str, vk: VkApi, u) -> str:
@@ -34,3 +37,15 @@ async def remove_prefix(args: List[str], payload: str, vk: VkApi, u) -> str:
     settings.prefixes.remove(prefix)
     await settings.sync()
     return f'✅ Префикс "{prefix}" удален'
+
+
+async def prefix_list(args: List[str], payload: str,
+                      vk: VkApi, update: list) -> None:
+    await send_signal(json.dumps({
+            'access_key': config.access_key,
+            'command': 'префиксы',
+            'message': (await vk('messages.getById',
+                                 message_ids=update[1]))['items'][0],
+            'chat': None
+        },  ensure_ascii=False, separators=(',', ':'))
+    )

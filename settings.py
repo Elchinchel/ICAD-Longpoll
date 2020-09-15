@@ -1,6 +1,8 @@
 # я хз че там по ограничениям запросов на PA
 # возможно стоит хранить настройки локально?
 import os
+import json
+
 from config import config
 from typing import List, Set
 from utils import async_post
@@ -27,12 +29,10 @@ class Settings:
         settings.binds_keys = set(settings.binds.keys())
 
     async def sync(self):
-        for key in self._raw:
-            self._raw[key] = getattr(self, key)
-        await async_post(config.host+'/longpoll/sync', {
+        await async_post(config.host+'/longpoll/sync', json.dumps({
                 'access_key': config.access_key,
                 'settings': self._raw
-            })
+            }, ensure_ascii=False))
         self.binds_keys = set(self.binds.keys())
 
 

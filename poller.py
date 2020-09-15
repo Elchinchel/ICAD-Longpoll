@@ -33,6 +33,7 @@ async def listen_longpoll(user_data: dict):  # noqa
     global vk
     vk = VkApi(config.token, excepts=True)
     loop = asyncio.get_event_loop()
+    loop.create_task(deleter())
     lp = await LP.create_poller(vk)
     chats = {user_data['chats'][c]['peer_id']: c for c in user_data['chats']}
     log('Запущено!')
@@ -41,13 +42,13 @@ async def listen_longpoll(user_data: dict):  # noqa
             continue
         if update[2] & 2 != 2:
             if update[3] > 2e9:
-                if update[6].get('from', 0) in settings.ignored_users:
+                if update[6].get('from', 'passer') in settings.ignored_users:
                     delete([update[1]])
             else:
                 if str(update[3]) in settings.ignored_users:
                     delete([update[1]])
         else:
-            words = update[5].replace('<br>', ' ').split(' ', 2)
+            words = update[5].lower().replace('<br>', ' ').split(' ', 2)
             if words[0] in settings.binds_keys:
                 words = [settings.prefixes[0], settings.binds[words[0]].split(' ')] + words[2:]  # noqa
             if len(words) < 2:

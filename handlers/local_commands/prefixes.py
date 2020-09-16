@@ -34,6 +34,8 @@ async def remove_prefix(args: List[str], payload: str, vk: VkApi, u) -> str:
         prefix = prefix[0]
     if prefix not in settings.prefixes:
         return '⚠️ Указанный префикс не существует'
+    if len(settings.prefixes) == 1:
+        return '❔ Но тогда не останется ни одного префикса...'
     settings.prefixes.remove(prefix)
     await settings.sync()
     return f'✅ Префикс "{prefix}" удален'

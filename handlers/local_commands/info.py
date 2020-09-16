@@ -3,7 +3,7 @@ from typing import List
 
 from lib.vkmini import VkApi
 
-VERSION = "0.1.3"
+VERSION = "0.1.4"
 
 
 async def info(args: List[str], payload: str,

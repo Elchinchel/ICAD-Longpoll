@@ -14,10 +14,14 @@ async def bind_add(args: List[str], payload: str,
         {префикс лп модуля} связать {слово}
         {команда}""".replace('    ', '')
     word = args[0]
-    command = payload.splitlines()[0]
-    settings.binds.update({word: command})
+    cmd_words = payload.split(' ')
+    if not (cmd_words[0] in settings.prefixes or cmd_words[0] in config.local_prefixes):  # noqa
+        payload = settings.prefixes[0] + ' ' + payload
+    else:
+        cmd_words[0] = cmd_words[1]
+    settings.binds.update({word: payload})
     await settings.sync()
-    return f'✅ Слово "{word}" привязано к команде "{command}"'
+    return f'✅ Слово "{word}" привязано к команде "{cmd_words[0]}"'
 
 
 async def bind_remove(args: List[str], payload: str,

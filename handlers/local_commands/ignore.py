@@ -30,7 +30,7 @@ async def ignore_remove(args: List[str], payload: str,
     if uid is None:
         return '⚠️ Пользователь не найден'
     uid = str(uid)
-    if uid in settings.ignored_users:
+    if uid not in settings.ignored_users:
         return '❔ Указанный пользователь не в игнорлисте'
     settings.ignored_users.remove(uid)
     await settings.sync()

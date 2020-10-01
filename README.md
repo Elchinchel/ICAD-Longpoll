@@ -13,6 +13,7 @@ pkg install python
 git clone https://github.com/elchinchel/icad_lp
 cd icad_lp
 pip install -r requirements.txt
+python3 start.py
 nano config.ini
 ```
 ## Настройка конфига

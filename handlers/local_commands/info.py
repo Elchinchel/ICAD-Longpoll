@@ -1,13 +1,9 @@
 import subprocess
-from typing import List
 
-from lib.vkmini import VkApi
-
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 
 
-async def info(args: List[str], payload: str,
-               vk: VkApi, update: list) -> str:
+async def info(*_) -> str:
     subprocess.run("git fetch", shell=True)
     out = subprocess.run("git log origin/master -1 --pretty=format:%B",
                          shell=True, capture_output=True).stdout

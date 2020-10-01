@@ -7,8 +7,7 @@ from settings import settings
 from config import config
 
 
-async def bind_add(args: List[str], payload: str,
-                   vk: VkApi, update: list) -> str:
+async def bind_add(args: List[str], payload: str, *_) -> str:
     if not (args and payload):
         return """Использование команды:
         {префикс лп модуля} связать {слово}
@@ -24,8 +23,7 @@ async def bind_add(args: List[str], payload: str,
     return f'✅ Слово "{word}" привязано к команде "{cmd_words[0]}"'
 
 
-async def bind_remove(args: List[str], payload: str,
-                      vk: VkApi, update: list) -> str:
+async def bind_remove(args: List[str], *_) -> str:
     if not args:
         return """Использование команды:
         {префикс лп модуля} отвязать {слово}

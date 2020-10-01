@@ -1,3 +1,4 @@
+# да, не очень, но работает и черт с ним
 from typing import Union, Tuple
 
 

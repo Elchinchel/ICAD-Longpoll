@@ -1,6 +1,6 @@
 import asyncio
 
-from lib.vkmini import VkApi, LP, logger
+from lib.vkmini import VkApi, LP
 from handlers import remote_commands
 from handlers.local_commands import local_commands
 from utils import log
@@ -42,23 +42,27 @@ async def listen_longpoll(user_data: dict):  # noqa
             continue
         if update[2] & 2 != 2:
             if update[3] > 2e9:
-                if update[6].get('from', 'passer') in settings.ignored_users:
+                if update[6].get('from') in settings.ignored_users:
                     delete([update[1]])
             else:
                 if str(update[3]) in settings.ignored_users:
                     delete([update[1]])
         else:
-            words = update[5].lower().replace('<br>', ' ').split(' ', 2)
-            if words[0] in settings.binds_keys:
-                update[5] = update[5].replace(words[0], settings.binds.get(words[0]))  # noqa
-                words = settings.binds[words[0]].split(' ')
+            words = update[5].replace('<br>', ' ').split(' ', 2)
+            first_word = words[0].lower()
+            if first_word in settings.binds_keys:
+                update[5] = update[5].replace(
+                    words[0], settings.binds.get(first_word)
+                )
+                words = settings.binds[first_word].split(' ')
+                first_word = words[0].lower()
             if len(words) < 2:
                 continue
-            if words[0] in settings.prefixes:
+            if first_word in settings.prefixes:
                 loop.create_task(
-                    remote_commands.handle(update, vk, chats, words[1])
+                    remote_commands.handle(update, vk, chats, words[1].lower())
                 )
-            if words[0] in config.local_prefixes:
+            if first_word in config.local_prefixes:
                 loop.create_task(
                     local_commands.handle(update, vk)
                 )

@@ -16,11 +16,11 @@ from utils import log
 
 
 def get_host() -> Union[str, None]:
-    host = f"http://{config.username}.pythonanywhere.com"
+    host = f"https://{config.username}.pythonanywhere.com"
     r = post(host)
     if r.status_code != 404:
         return host
-    host = f"http://{config.username}.eu.pythonanywhere.com"
+    host = f"https://{config.username}.eu.pythonanywhere.com"
     r = post(host)
     if r.status_code != 404:
         return host

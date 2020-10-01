@@ -4,6 +4,7 @@ from .prefixes import add_prefix, remove_prefix, prefix_list
 from .ignore import ignore_add, ignore_list, ignore_remove
 from .binds import bind_add, binds_list, bind_remove
 from .ping import pings, ping
+from .updating import update
 from .info import info
 
 
@@ -19,13 +20,14 @@ commands = {
     'отвязать': bind_remove,
     'бинды': binds_list,
     'связки': binds_list,
-    'инфо': info
+    'инфо': info,
+    'обновить': update
 }
 
 commands.update({name: ping for name in pings})
 
 
-async def passer(*any):
+async def passer(*_):
     return "Неизвестная команда"
 
 

@@ -7,7 +7,7 @@ from settings import settings
 from config import config
 
 
-async def add_prefix(args: List[str], payload: str, vk: VkApi, u) -> str:
+async def add_prefix(args: List[str], payload: str, *_) -> str:
     prefix = payload.split(' ')
     if prefix == ['']:
         if len(args) == 0:
@@ -23,7 +23,7 @@ async def add_prefix(args: List[str], payload: str, vk: VkApi, u) -> str:
     return f'✅ Префикс "{prefix}" добавлен'
 
 
-async def remove_prefix(args: List[str], payload: str, vk: VkApi, u) -> str:
+async def remove_prefix(args: List[str], payload: str, *_) -> str:
     prefix = payload.split(' ')
     if prefix == ['']:
         if len(args) == 0:

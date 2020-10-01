@@ -5,6 +5,21 @@ from typing import Set
 
 path = os.path.join(os.getcwd(), 'config.ini')
 
+try:
+    with open(path, 'r'):
+        pass
+except FileNotFoundError:
+    with open(path, 'w', encoding='utf-8') as file:
+        file.write(
+            "[token]\n# Токен нужно вставить ПОД эту строку, 85 символов\n\n"
+            "[username]\n# Сюда нужно вставить имя пользователя на pythonanywhere\n\n"  # noqa
+            "[host]\n# Если не указано поле \"username\", сюда нужно вставить ссылку на callback модуль\n\n"  # noqa
+            "# Поля ниже заполнять не нужно\n[access_key]\n[self_id]\n"
+            "[local_prefixes]\n/s\n!лп\n.лп"
+        )
+        print('Создан конфигурационный файл config.ini, необходимо заполнить')
+        sys.exit()
+
 
 class Config:
     _raw: dict
@@ -41,5 +56,5 @@ if config.token is None:
     sys.exit()
 if config.host is not None:
     if not config.host.startswith('http'):
-        config.host = 'http://' + config.host
+        config.host = 'https://' + config.host
         config.sync()

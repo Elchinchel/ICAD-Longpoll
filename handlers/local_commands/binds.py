@@ -18,7 +18,7 @@ async def bind_add(args: List[str], payload: str, *_) -> str:
         payload = settings.prefixes[0] + ' ' + payload
     else:
         cmd_words[0] = cmd_words[1]
-    settings.binds.update({word: payload})
+    settings.binds.update({word.lower(): payload})
     await settings.sync()
     return f'✅ Слово "{word}" привязано к команде "{cmd_words[0]}"'
 

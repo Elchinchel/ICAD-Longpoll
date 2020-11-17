@@ -11,7 +11,7 @@ try:
 except FileNotFoundError:
     with open(path, 'w', encoding='utf-8') as file:
         file.write(
-            "[token]\n# Токен нужно вставить ПОД эту строку, 85 символов\n\n"
+            "[token]\n# Токен нужно вставить ПОД эту строку, 85 символов (НЕ ВК МИ токен!!!)\n\n"  # noqa
             "[username]\n# Сюда нужно вставить имя пользователя на pythonanywhere\n\n"  # noqa
             "[host]\n# Если не указано поле \"username\", сюда нужно вставить ссылку на callback модуль\n\n"  # noqa
             "# Поля ниже заполнять не нужно\n[access_key]\n[self_id]\n"

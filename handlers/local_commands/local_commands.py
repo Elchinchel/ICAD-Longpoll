@@ -27,13 +27,14 @@ commands = {
 commands.update({name: ping for name in pings})
 
 
-async def passer(*_):
-    return "Неизвестная команда"
+async def passer(_, __, ___, update):
+    return (f'Локальная команда "{update[5]}" не найдена\n' +
+                 'Попробуй использовать удалённый префикс вместо локального')
 
 
 async def handle(update: list, vk: VkApi):
     command, args, payload = parse(update[5].replace('<br>', '\n'))
-    log(f'Обрабатываю локальную команду "{command}"...')
+    log(f'Получена локальная команда "{command}"...')
     update[5] = command
     response = await commands.get(command, passer)(args, payload, vk, update)
     if response is not None:

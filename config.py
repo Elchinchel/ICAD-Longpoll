@@ -1,24 +1,31 @@
 import os
 import sys
-from lib.isthisapigeon import parse, make
+
+from configparser import ConfigParser
 from typing import Set
+
+def _get_parser():
+    return ConfigParser(allow_no_value=True, delimiters=('=',))
 
 path = os.path.join(os.getcwd(), 'config.ini')
 
 try:
-    with open(path, 'r'):
-        pass
+    open(path).close()
 except FileNotFoundError:
     with open(path, 'w', encoding='utf-8') as file:
-        file.write(
-            "[token]\n# Токен нужно вставить ПОД эту строку, 85 символов (НЕ ВК МИ токен!!!)\n\n"  # noqa
-            "[username]\n# Сюда нужно вставить имя пользователя на pythonanywhere\n\n"  # noqa
-            "[host]\n# Если не указано поле \"username\", сюда нужно вставить ссылку на callback модуль\n\n"  # noqa
-            "# Поля ниже заполнять не нужно\n[access_key]\n[self_id]\n"
-            "[local_prefixes]\n/s\n!лп\n.лп"
-        )
-        print('Создан конфигурационный файл config.ini, необходимо заполнить')
-        sys.exit()
+        print('Окей, давай конфигурнём\n' +
+                 '(вставить текст можно выбрав "paste" после долгого нажатия на экран)')
+        token = input('Введи токен: ')
+        username = input('Введи имя пользователя на pythonanywhere ' +
+                                         '(оставь пустым, если хочешь указать свой хост): ')
+        if username == "":
+            host = input('Введи адрес дежурного ' +
+                                  '(если протокол не указан, буду подключаться через HTTPS): ')
+        with open(path, 'w') as file:
+            file.write(
+                f'[token]\n{token}\n[username]\n{username}\n[host]\n{host}\n' +
+                f'[access_key]\n[self_id]\n[local_prefixes]'
+            )
 
 
 class Config:
@@ -32,18 +39,33 @@ class Config:
     local_prefixes: Set[str]
 
     def __init__(self):
-        with open(path, 'r', encoding='utf-8') as cfg:
-            self._raw, self.__format = parse(cfg.read(), save_format=True)
+        self._raw = {}
+        with open(path, 'r', encoding='utf-8') as file:
+            parser = _get_parser()
+            parser.read_file(file)
+            for name, val in parser.items():
+                if len(val) == 0:
+                    value = ""
+                else:
+                    val = [v for v in val.items()]
+                    value = val[0][0] if len(val) == 1 else [v[0] for v in val]
+                self._raw[name] = value
             self.__dict__.update(self._raw)
             self.local_prefixes = set(self.local_prefixes)
-            if self.username is None:
-                self.username = ""
 
     def sync(self):
+        parser = _get_parser()
         for key in self._raw:
-            self._raw[key] = getattr(self, key)
-        with open(path, 'w', encoding='utf-8') as cfg:
-            cfg.write(make(self._raw, self.__format))
+            if key == 'DEFAULT':
+                continue
+            parser.add_section(key)
+            val = getattr(self, key)
+            if type(val) not in {list, set}:
+                val = [val]
+            for v in val:
+                parser.set(key, str(v), None)
+        with open(path, 'w', encoding='utf-8') as file:
+            parser.write(file)
 
 
 config = Config()

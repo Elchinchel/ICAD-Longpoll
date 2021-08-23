@@ -6,6 +6,7 @@ import asyncio
 import traceback
 
 from requests import post
+from aiohttp import client_exceptions as http_exc
 from requests.exceptions import ConnectionError as ConnErr
 from typing import Union
 
@@ -48,7 +49,7 @@ if r.status_code - 200 > 100:
         500: 'Ошибка на удаленном сервере'
     }.get(r.status_code, 'Сервер вернул неизвестный код'))
     sys.exit()
-
+print(r.text)
 data: dict = r.json()
 if 'error' in data:
     if data['error'] == 0:
@@ -69,9 +70,11 @@ while True:
         asyncio.get_event_loop().run_until_complete(
             listen_longpoll(data)
         )
+    except (http_exc.ClientOSError, http_exc.ClientConnectorError) as e:
+        log(f'Беды с интернетом\nОшибочка "{e}"')
     except Exception:
         log(f'Произошла ошибка!\n{traceback.format_exc()}')
-        time.sleep(5)
     except KeyboardInterrupt:
         log('Клавиатурное прерывание, сдыхаю...')
         break
+    time.sleep(5)

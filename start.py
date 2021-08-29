@@ -27,7 +27,7 @@ def get_host() -> Union[str, None]:
         return host
 
 
-if config.host is None:
+if config.host == "":
     config.host = get_host()
     if config.host is None:
         print('Не удалось найти сайт\n' +
@@ -49,7 +49,7 @@ if r.status_code - 200 > 100:
         500: 'Ошибка на удаленном сервере'
     }.get(r.status_code, 'Сервер вернул неизвестный код'))
     sys.exit()
-print(r.text)
+
 data: dict = r.json()
 if 'error' in data:
     if data['error'] == 0:

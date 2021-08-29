@@ -72,13 +72,13 @@ class Config:
 
 config = Config()
 
-if config.username == "" and config.host is None:
+if config.username == "" and config.host == "":
     print('Необходимо указать имя пользователя или сайт в config.ini')
     sys.exit()
-if config.token is None:
+if config.token == "":
     print('Необходимо указать токен в config.ini')
     sys.exit()
-if config.host is not None:
+if config.host != "":
     if not config.host.startswith('http'):
         config.host = 'https://' + config.host
         config.sync()

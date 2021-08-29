@@ -26,7 +26,7 @@ except FileNotFoundError:
         with open(path, 'w') as file:
             file.write(
                 f'[token]\n{token}\n[username]\n{username}\n[host]\n{host}\n' +
-                f'[access_key]\n[self_id]\n[local_prefixes]'
+                f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'
             )
 
 
@@ -53,6 +53,8 @@ class Config:
                     value = val[0][0] if len(val) == 1 else [v[0] for v in val]
                 self._raw[name] = value
             self.__dict__.update(self._raw)
+            if type(self.local_prefixes) == str:
+                self.local_prefixes = [self.local_prefixes]
             self.local_prefixes = set(self.local_prefixes)
 
     def sync(self):

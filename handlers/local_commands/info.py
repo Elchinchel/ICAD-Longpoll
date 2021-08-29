@@ -1,6 +1,6 @@
 import subprocess
 
-VERSION = "0.1.8 beta"
+VERSION = "0.1.8 beta rev.1"
 
 
 async def info(*_) -> str:

@@ -21,6 +21,8 @@ except FileNotFoundError:
         if username == "":
             host = input('Введи адрес дежурного ' +
                                   '(если протокол не указан, буду подключаться через HTTPS): ')
+        else:
+            host = ""
         with open(path, 'w') as file:
             file.write(
                 f'[token]\n{token}\n[username]\n{username}\n[host]\n{host}\n' +

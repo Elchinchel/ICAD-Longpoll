@@ -1,0 +1,24 @@
+{
+  "name": "ICAD-Longpoll",
+  "description": "Longpoll module for IrCA",
+  "repository": "https://github.com/Obnovlator3000/ICAD-Longpoll",
+  "env": {
+    "token": {
+      "description": "Ваш токен"
+    },
+    "host": {
+      "description": "Имя пользователя на PA или ссылка на админпанель."
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}

@@ -1,5 +1,4 @@
-# reqirements.txt
 multidict==4.7.6 --no-binary=multidict
 yarl==1.5.1 --no-binary=yarl
-aiohttp==3.6.2
+aiohttp
 requests==2.23.0

@@ -1,11 +1,13 @@
 import os
 import sys
-
+import re
 from configparser import ConfigParser
 from typing import Set
 
+
 def _get_parser():
     return ConfigParser(allow_no_value=True, delimiters=('=',))
+
 
 path = os.path.join(os.getcwd(), 'config.ini')
 
@@ -13,21 +15,45 @@ try:
     open(path).close()
 except FileNotFoundError:
     with open(path, 'w', encoding='utf-8') as file:
-        print('Окей, давай конфигурнём\n' +
-                 '(вставить текст можно выбрав "paste" после долгого нажатия на экран)')
-        token = input('Введи токен: ')
-        username = input('Введи имя пользователя на pythonanywhere ' +
-                                         '(оставь пустым, если хочешь указать свой хост): ')
-        if username == "":
-            host = input('Введи адрес дежурного ' +
-                                  '(если протокол не указан, буду подключаться через HTTPS): ')
+        if os.environ.get("token") and os.environ.get("host"):
+            if '.' in os.environ["host"]:
+                username, host = '', os.environ["host"]
+            else:
+                host, username = '', os.environ["host"]
+            if len(os.environ["token"]) != 85:
+                token = re.search(r'access_token=[a-z0-9]{85}', os.environ["token"])
+                if token:
+                    os.environ["token"] = token[0][13:]
+                else:
+                    sys.exit()
+            with open(path, 'w', encoding="utf-8") as file:
+                file.write(
+                    f'[token]\n{os.environ["token"]}\n[username]\n{username}\n[host]\n{host}\n' +
+                    f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'
+                )
         else:
-            host = ""
-        with open(path, 'w') as file:
-            file.write(
-                f'[token]\n{token}\n[username]\n{username}\n[host]\n{host}\n' +
-                f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'
-            )
+            print('Окей, давай конфигурнём\n(вставить текст можно выбрав '
+                  '"paste" после долгого нажатия на экран)')
+            token = input('Введи токен: ')
+            if len(token) != 85:
+                token = re.search(r'access_token=[a-z0-9]{85}', token)
+                if token:
+                    token = token[0][13:]
+                else:
+                    print('Это не токен...')
+                    sys.exit()
+            username = input('Введи имя пользователя на pythonanywhere ' +
+                             '(оставь пустым, если хочешь указать свой хост): ')
+            if username == "":
+                host = input('Введи адрес дежурного (если протокол не указан, '
+                             'буду подключаться через HTTPS): ')
+            else:
+                host = ""
+            with open(path, 'w', encoding="utf-8") as file:
+                file.write(
+                    f'[token]\n{token}\n[username]\n{username}\n[host]\n{host}\n' +
+                    f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'
+                )
 
 
 class Config:

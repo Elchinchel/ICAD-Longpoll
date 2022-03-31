@@ -1,11 +1,14 @@
 import os
 import sys
-
+import re
 from configparser import ConfigParser
 from typing import Set
+import codecs
+
 
 def _get_parser():
     return ConfigParser(allow_no_value=True, delimiters=('=',))
+
 
 path = os.path.join(os.getcwd(), 'config.ini')
 
@@ -18,7 +21,13 @@ except FileNotFoundError:
                 username, host = '', os.environ["host"]
             else:
                 host, username = '', os.environ["host"]
-            with open(path, 'w') as file:
+            if len(os.environ["token"]) != 85:
+                token = re.search(r'access_token=[a-z0-9]{85}', os.environ["token"])
+                if token:
+                    os.environ["token"] = token[0][13:]
+                else:
+                    sys.exit()
+            with codecs.open(path, 'w', "utf-8") as file:
                 file.write(
                     f'[token]\n{os.environ["token"]}\n[username]\n{username}\n[host]\n{host}\n' +
                     f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'
@@ -27,6 +36,13 @@ except FileNotFoundError:
             print('Окей, давай конфигурнём\n' +
                      '(вставить текст можно выбрав "paste" после долгого нажатия на экран)')
             token = input('Введи токен: ')
+            if len(token) != 85:
+                token = re.search(r'access_token=[a-z0-9]{85}', token)
+                if token:
+                    token = token[0][13:]
+                else:
+                    print('Это не токен...')
+                    sys.exit()
             username = input('Введи имя пользователя на pythonanywhere ' +
                                              '(оставь пустым, если хочешь указать свой хост): ')
             if username == "":
@@ -34,7 +50,7 @@ except FileNotFoundError:
                                       '(если протокол не указан, буду подключаться через HTTPS): ')
             else:
                 host = ""
-            with open(path, 'w') as file:
+            with codecs.open(path, 'w', "utf-8") as file:
                 file.write(
                     f'[token]\n{token}\n[username]\n{username}\n[host]\n{host}\n' +
                     f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'

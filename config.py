@@ -1,3 +1,4 @@
+import yaml
 import os
 import sys
 import re
@@ -9,10 +10,13 @@ def _get_parser():
     return ConfigParser(allow_no_value=True, delimiters=('=',))
 
 
-path = os.path.join(os.getcwd(), 'config.ini')
+path = os.path.join(os.getcwd(), 'config.yaml')
 
 try:
-    open(path).close()
+    with open(path, 'r') as x:
+        if x.read() == '':
+            x.close()
+            raise FileNotFoundError
 except FileNotFoundError:
     with open(path, 'w', encoding='utf-8') as file:
         if os.environ.get("token") and os.environ.get("host"):
@@ -20,23 +24,25 @@ except FileNotFoundError:
                 username, host = '', os.environ["host"]
             else:
                 host, username = '', os.environ["host"]
-            if len(os.environ["token"]) != 85:
-                token = re.search(r'access_token=[a-z0-9]{85}', os.environ["token"])
+            if len(os.environ["token"]) != 198:
+                token = re.search(r'access_token=[^&]+', os.environ["token"])
                 if token:
                     os.environ["token"] = token[0][13:]
                 else:
                     sys.exit()
             with open(path, 'w', encoding="utf-8") as file:
-                file.write(
+                file.write(yaml.dump({"token": token, "host": host, "username": username, "access_key": '', "self_id": '',
+                           "local_prefixes": ['.лп', '!лп', '/s']}))
+                """file.write(
                     f'[token]\n{os.environ["token"]}\n[username]\n{username}\n[host]\n{host}\n' +
                     f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'
-                )
+                )"""
         else:
             print('Окей, давай конфигурнём\n(вставить текст можно выбрав '
                   '"paste" после долгого нажатия на экран)')
             token = input('Введи токен: ')
-            if len(token) != 85:
-                token = re.search(r'access_token=[a-z0-9]{85}', token)
+            if len(token) != 198:
+                token = re.search(r'access_token=[^&]+', token)
                 if token:
                     token = token[0][13:]
                 else:
@@ -51,9 +57,8 @@ except FileNotFoundError:
                 host = ""
             with open(path, 'w', encoding="utf-8") as file:
                 file.write(
-                    f'[token]\n{token}\n[username]\n{username}\n[host]\n{host}\n' +
-                    f'[access_key]\n[self_id]\n[local_prefixes]\n.лп\n!лп\n/s'
-                )
+                    yaml.dump({"token": token, "host": host, "username": username, "access_key": '', "self_id": '',
+                               "local_prefixes": ['.лп', '!лп', '/s']}))
 
 
 class Config:
@@ -69,33 +74,27 @@ class Config:
     def __init__(self):
         self._raw = {}
         with open(path, 'r', encoding='utf-8') as file:
-            parser = _get_parser()
-            parser.read_file(file)
+
+            parser = yaml.safe_load(file.read())
+            print(parser)
+            """parser = _get_parser()
+            parser.read_file(file)"""
             for name, val in parser.items():
+                print(name, val)
                 if len(val) == 0:
                     value = ""
                 else:
-                    val = [v for v in val.items()]
-                    value = val[0][0] if len(val) == 1 else [v[0] for v in val]
+                    value = val
                 self._raw[name] = value
             self.__dict__.update(self._raw)
             if type(self.local_prefixes) == str:
                 self.local_prefixes = [self.local_prefixes]
             self.local_prefixes = set(self.local_prefixes)
+            print(self._raw)
 
     def sync(self):
-        parser = _get_parser()
-        for key in self._raw:
-            if key == 'DEFAULT':
-                continue
-            parser.add_section(key)
-            val = getattr(self, key)
-            if type(val) not in {list, set}:
-                val = [val]
-            for v in val:
-                parser.set(key, str(v), None)
         with open(path, 'w', encoding='utf-8') as file:
-            parser.write(file)
+            file.write(yaml.dump(self._raw))
 
 
 config = Config()

@@ -24,12 +24,16 @@ except FileNotFoundError:
                 username, host = '', os.environ["host"]
             else:
                 host, username = '', os.environ["host"]
-            if len(os.environ["token"]) != 198:
+            if os.environ["token"].startswith('vk1.a.'):
+                token = os.environ["token"]
+            else:
                 token = re.search(r'access_token=[^&]+', os.environ["token"])
                 if token:
                     os.environ["token"] = token[0][13:]
                 else:
+                    print("No access token found")
                     sys.exit()
+            
             with open(path, 'w', encoding="utf-8") as file:
                 file.write(yaml.dump({"token": token, "host": host, "username": username, "access_key": '', "self_id": '',
                            "local_prefixes": ['.лп', '!лп', '/s']}))
@@ -41,7 +45,7 @@ except FileNotFoundError:
             print('Окей, давай конфигурнём\n(вставить текст можно выбрав '
                   '"paste" после долгого нажатия на экран)')
             token = input('Введи токен: ')
-            if len(token) != 198:
+            if not token.startswith('vk1.a.'):
                 token = re.search(r'access_token=[^&]+', token)
                 if token:
                     token = token[0][13:]
